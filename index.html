@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Experiments</title>
+    <style>
+      /*----------- Elements ------------*/
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: sans-serif;
+        box-sizing: border-box;
+      }
+
+      /*----------- Overlay -------------*/
+
+      .overlay {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        position: fixed;
+        display: none;
+        z-index: 10;
+      }
+
+      .overlay--active {
+        display: block;
+      }
+
+      /*------------- Nav ---------------*/
+
+      .nav {
+        display: flex;
+        background-color: #dc1f26;
+        padding: 0 24px;
+        justify-content: center;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.32);
+        z-index: 100;
+        position: relative;
+      }
+
+      .nav-item {
+        padding: 16px 24px;
+        color: white;
+        border-left: 1px solid black;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .nav-item:hover {
+        background-color: #b0181e;
+      }
+
+      .nav-item:last-of-type {
+        border-right: 1px solid black;
+      }
+
+      .panel {
+        background-color: rgb(255, 255, 255);
+        color: black;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%);
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.32);
+        display: flex;
+        font-size: 24px;
+        padding: 24px;
+        white-space: nowrap;
+        gap: 16px;
+        display: none;
+        cursor: auto;
+      }
+
+      .nav-item:hover > .panel {
+        display: flex;
+      }
+
+      /*----------- Carousel ------------*/
+
+      .carousel {
+        display: flex;
+        overflow: hidden;
+        margin: auto;
+        width: 300px;
+        height: 200px;
+        position: relative;
+      }
+
+      .image {
+        width: 300px;
+        height: 200px;
+        transform: translate3d(300px, 0, 0);
+        left: 0;
+        position: absolute;
+      }
+
+      .image--active {
+        transition: transform 500ms;
+        transform: translate3d(0, 0, 0);
+        z-index: 1;
+      }
+
+      .image--leaving {
+        transition: transform 500ms;
+        transform: translate3d(-300px, 0, 0);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay"></div>
+    <nav class="nav">
+      <div class="nav-item">
+        <div>Category 1</div>
+        <div class="panel">
+          <div>
+            <div>Stuff</div>
+            <div>Stuff</div>
+            <div>Stuff</div>
+          </div>
+          <div>
+            <div>Stuff</div>
+            <div>Stuff</div>
+            <div>Stuff</div>
+          </div>
+          <div>
+            <div>Stuff</div>
+            <div>Stuff</div>
+            <div>Stuff</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <div>Category 2</div>
+        <div class="panel">
+          <div>
+            <div>Things</div>
+            <div>Things</div>
+            <div>Things</div>
+          </div>
+          <div>
+            <div>Things</div>
+            <div>Things</div>
+            <div>Things</div>
+          </div>
+          <div>
+            <div>Things</div>
+            <div>Things</div>
+            <div>Things</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <div>Category 3</div>
+        <div class="panel">
+          <div>
+            <div>Items</div>
+            <div>Items</div>
+            <div>Items</div>
+          </div>
+          <div>
+            <div>Items</div>
+            <div>Items</div>
+            <div>Items</div>
+          </div>
+          <div>
+            <div>Items</div>
+            <div>Items</div>
+            <div>Items</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="carousel">
+      <img
+        class="image image--active"
+        src="https://i.picsum.photos/id/375/300/200.jpg?hmac=SUCJzvnaZ1ycqdZUoozmBZZUTm7B7BJ3fZo4UsPLiHE"
+      />
+      <img
+        class="image"
+        src="https://i.picsum.photos/id/76/300/200.jpg?hmac=XD9K1uiD_PfTLQAMZ-DDh7agT-HwI3DtIcdNjyKk_GM"
+      />
+      <img
+        class="image"
+        src="https://i.picsum.photos/id/674/300/200.jpg?hmac=yH5rkbzvgHDnf-1vkfPNZkummbCL2ClEPJq1bw5uCYo"
+      />
+    </div>
+  </body>
+
+  <script>
+    // Nav ///////////////////////////////////////////
+    const navItems = document.querySelectorAll('.nav-item');
+    const overlay = document.querySelector('.overlay');
+
+    navItems.forEach((el) => {
+      el.onmouseenter = () => {
+        overlay.classList.add('overlay--active');
+      };
+
+      el.onmouseleave = () => {
+        overlay.classList.remove('overlay--active');
+      };
+    });
+
+    // Carousel //////////////////////////////////////
+    const images = document.querySelectorAll('.image');
+
+    const imageCount = 3;
+    let activeImage = 0;
+
+    images.forEach((el) => {
+      el.ontransitionend = (el) => {
+        el.target.classList.remove('image--leaving');
+      };
+    });
+
+    setInterval(() => {
+      images[activeImage].classList.add('image--leaving');
+
+      activeImage = (activeImage + 1) % imageCount;
+
+      images.forEach((el, i) => {
+        if (i === activeImage) {
+          el.classList.add('image--active');
+        } else {
+          el.classList.remove('image--active');
+        }
+      });
+    }, 1000);
+  </script>
+</html>
